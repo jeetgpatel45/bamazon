@@ -21,15 +21,9 @@ function query() {
     console.log("products on Sale");
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
-        for (var i = 0; i < res.length; i++) {
-            console.log(
-                "=========================" + "\n" +
-                "ITEM ID: " + res[i].id + '\n' +
-                "PRODUCT NAME: " + res[i].product_name + '\n' +
-                "UNIT PRICE: $" + res[i].price + "\n" +
-                "UNITS REMAINING: " + res[i].stock_quantity + "\n"
-            );
-        }
+        console.table(res);
+        console.log("=========================")
+
         buyItem();
     });
 }
@@ -47,7 +41,7 @@ function buyItem() {
         },
         {
             name: "quantity",
-            type: "number",
+            type: "input",
             message: "how many would you like to buy",
             validate: function (value) {
                 if (isNaN(value) === false) {
@@ -56,7 +50,9 @@ function buyItem() {
             }
         }
     ]).then(function (buyer) {
-        var select = "SELECT Item_id, stock_quantity, price, product_name FROM products WHERE Item_id = ?" + (buyer.Item_id);
+        // console.log(buyer.quantity);
+        // console.log(buyer.item)
+        var select = "SELECT Item_id, product_name, price, stock_quantity FROM products WHERE Item_id =" + (buyer.item);
         connection.query(select, function (err, res) {
             if (err) throw err;
             var avability = (res[0].stock_quantity);
@@ -66,11 +62,11 @@ function buyItem() {
                 return;
             } else {
                 var total = (res[0].stock_quantity) - buyer.quantity;
-                var totalPrice = answer.quantity * (res[0].price);
+                var totalPrice = buyer.quantity * (res[0].price);
                 var update = "UPDATE products SET stock_quantity=" + total + " WHERE Item_id=" + buyer.item;
                 connection.query(update, function (err, res) {
                     if (err) throw err;
-                    if (answer.quantity > 1) {
+                    if (buyer.quantity > 1) {
                         console.log("You Purchased an Item, THANK YOU")
                     } else {
                         console.log("Item Not Purchased")
