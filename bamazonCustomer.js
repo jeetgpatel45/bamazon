@@ -69,7 +69,7 @@ function buyItem() {
                     if (buyer.quantity > 1) {
                         console.log("You Purchased an Item, THANK YOU")
                     } else {
-                        console.log("Item Not Purchased")
+                        console.log("You Purchased an Item, THANK YOU")
                     }
                     console.log("Total Price: $" + totalPrice)
                 })
